@@ -14,6 +14,7 @@ const userRegister = async (req, res) => {
 
   const existUser = await userModel.findOne({ email: email });
 
+  //check user exist or not
   if (existUser) {
     return res.status(400).json({
       success: false,
@@ -22,7 +23,7 @@ const userRegister = async (req, res) => {
   }
 
   if (password !== confirmPassword) {
-   return res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: "Password and confirm password doesn't match",
     });
@@ -32,6 +33,7 @@ const userRegister = async (req, res) => {
   const salt = bcrypt.genSaltSync(10);
   const hashedPassword = bcrypt.hashSync(password, salt);
 
+  //create user
   const saveUser = await userModel.create({
     name,
     email,
@@ -44,6 +46,44 @@ const userRegister = async (req, res) => {
     message: "Successfully registered",
     data: saveUser,
   });
+};
+
+//login user
+const userLogin = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email && !password) {
+    return res.status(400).json({
+      success: false,
+      message: "Fill up all the field",
+    });
+  }
+
+  const existedUser = await userModel.findOne({ email: email });
+
+  if (!existedUser) {
+    return res.staus(400).json({
+      success: false,
+      message: "User not found with this email.",
+    });
+  }
+
+  const isMatchedPassword = await bcrypt.compare(
+    password,
+    existedUser.password
+  );
+
+  if (!isMatchedPassword) {
+    return res.status(400).json({
+      success: false,
+      message: "Password doesn't match.",
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "User login successful",
+    });
+  }
 };
 
 module.exports = { userRegister };
