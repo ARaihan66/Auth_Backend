@@ -4,25 +4,25 @@ const userSchema = Schema(
   {
     name: {
       type: String,
-      require: true,
+      required: true,
       trim: true,
     },
 
     email: {
       type: String,
-      require: true,
+      required: true,
       trim: true,
     },
 
     password: {
       type: String,
-      require: true,
+      required: true,
       trim: true,
     },
 
     tc: {
-      type: String,
-      require: true,
+      type: Boolean,
+      required: true,
       trim: true,
     },
   },
