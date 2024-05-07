@@ -62,7 +62,7 @@ const userLogin = async (req, res) => {
   const existedUser = await userModel.findOne({ email: email });
 
   if (!existedUser) {
-    return res.staus(400).json({
+    return res.status(400).json({
       success: false,
       message: "User not found with this email.",
     });
@@ -78,12 +78,11 @@ const userLogin = async (req, res) => {
       success: false,
       message: "Password doesn't match.",
     });
-
-    res.status(200).json({
-      success: true,
-      message: "User login successful",
-    });
   }
+  res.status(200).json({
+    success: true,
+    message: "User login successful",
+  });
 };
 
-module.exports = { userRegister };
+module.exports = { userRegister, userLogin };
