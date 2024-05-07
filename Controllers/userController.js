@@ -1,5 +1,6 @@
 const userModel = require("../Models/userModel");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 //register user
 const userRegister = async (req, res) => {
@@ -68,6 +69,12 @@ const userLogin = async (req, res) => {
     });
   }
 
+  const jwtToken = jwt.sign(
+    { userId: existedUser._id },
+    process.env.JWT_SECRET_KEY,
+    { expiresIn: "30d" }
+  );
+
   const isMatchedPassword = await bcrypt.compare(
     password,
     existedUser.password
@@ -79,10 +86,19 @@ const userLogin = async (req, res) => {
       message: "Password doesn't match.",
     });
   }
-  res.status(200).json({
-    success: true,
-    message: "User login successful",
-  });
+  res
+    .cookie("Token", jwtToken, { httpOnly: true, maxAge: 3600000000 })
+    .status(200)
+    .json({
+      success: true,
+      message: "User login successful",
+      token: jwtToken,
+    });
+};
+
+// user password change
+const userPasswordChange = async (req, res) => {
+    const 
 };
 
 module.exports = { userRegister, userLogin };
